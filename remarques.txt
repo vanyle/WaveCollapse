@@ -1,0 +1,18 @@
+Remarques techniques sur l'implémentation de l'algoritme:
+
+Algorithme wave_collapse.nim est écrit en Nim.
+Des versions précompilés pour window et linux sont disponibles.
+
+Nim est installable ici: https://nim-lang.org/install.html
+Il devrait être installable avec `sudo apt-get install nim` sous Ubuntu / WSL.
+Une version > 1.0 est conseillée.
+
+La librarie stb_image doit être installé pour lire/écrire des fichiers .png
+
+Elle est installable avec: `nimble install stb_image`
+
+Le code se compile avec: `nim c -d:release wave_collapse.nim`
+
+Le code a été testé sous linux et windows avec les version 0.20.0 et 1.6.8 de Nim.
+
+Nim peut, si besoin, être converti en C++ avec: https://github.com/vanyle/NimToCpp
