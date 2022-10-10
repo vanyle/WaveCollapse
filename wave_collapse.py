@@ -57,6 +57,23 @@ def textureToConstraints(tex):
 
     return (bigPicture, colorTable)
 
+def texture1dToConstraints(tex):
+    bigPicture = np.zeros(len(tex))
+    colorTable = {}
+    reverseColorTable = {}
+    for i in range(len(tex)):
+        col = tex[i]
+        if col not in reverseColorTable:
+            vid = len(reverseColorTable)
+            reverseColorTable[col] = vid
+            colorTable[vid] = col
+        else:
+            vid = reverseColorTable[col]
+        bigPicture[i] = vid
+
+    return (bigPicture, colorTable)
+
+
 def forceSelfSimilarity(bigImage):
     big_image_width,big_image_height = bigImage.shape
 
@@ -92,7 +109,11 @@ def forceSelfSimilarity(bigImage):
 
 def makeTileMap2(bigImage):
     pixelCount = 0
-    big_image_width,big_image_height = bigImage.shape
+    if isinstance(bigImage, (np.ndarray, np.generic)):
+        big_image_width,big_image_height = bigImage.shape
+    else:
+        big_image_width,big_image_height = (1, len(bigImage[0]))
+
     result = TileMap2()
 
     for ori in orientations:
@@ -317,7 +338,32 @@ def toTexture(tmap: TileMap2, coloring):
 
     return np.array(bitmap).reshape((tmap.width, tmap.height, 4)).astype(np.uint8)
 
+def text_gen():
+    import re
+    content = open("corbeau_et_renard.txt", encoding="utf-8").read()
+    content = content.replace("\n"," ").lower()
+    content = re.sub(r'[^\w ]+', '', content)
+    words = content.split(" ")
+    print(words)
+    big_picture, colorTable = texture1dToConstraints(words)
+    tm = makeTileMap2([big_picture])
+    collapse(tm, 1, 30)
+
+    def coloring(vid):
+        return colorTable[int(vid)]
+    result = []
+    for i in range(tm.height):
+        if (0,i) in tm.tmap:
+            vals = tm.tmap[(0,i)]
+            for v in vals:
+                result.append(coloring(v))
+                break
+
+    print(" ".join(result))
+
+
 if __name__ == "__main__":
+    # text_gen()
     tex = createTexture("Beach.png")
 
     big_picture, colorTable = textureToConstraints(tex)
