@@ -341,14 +341,17 @@ def toTexture(tmap: TileMap2, coloring):
 def text_gen():
     import re
     content = open("corbeau_et_renard.txt", encoding="utf-8").read()
+    # Remove line breaks and punctuation
     content = content.replace("\n"," ").lower()
     content = re.sub(r'[^\w ]+', '', content)
     words = content.split(" ")
-    print(words)
+
+    # Apply WFC (with some changes for 1d)
     big_picture, colorTable = texture1dToConstraints(words)
     tm = makeTileMap2([big_picture])
     collapse(tm, 1, 30)
 
+    # Convert back the ids to words
     def coloring(vid):
         return colorTable[int(vid)]
     result = []
